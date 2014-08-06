@@ -38,7 +38,10 @@ namespace SudokuSolver
 				if (boardBuffer.Count == 9*9)
 				{
 					var newBoard = new Board (boardBuffer);
-					allBoards.Add(newBoard);
+					if (! newBoard.IsTemplate())
+					{
+						allBoards.Add(newBoard);
+					}
 					boardBuffer.Clear();
 				}
 			}

@@ -25,12 +25,14 @@ namespace SudokuSolver
 
 				currentBoard = Iterate(currentBoard, out moveIndex);
 
-				keepTrying = moveIndex.IsSolved();
-
-				moves++;
-
-				var success = currentBoard.Validate();
-				if (!success)
+				// sanity-check
+				var valid = currentBoard.Validate();
+				if (valid)
+				{
+					keepTrying = moveIndex.IsSolved();
+					moves++;
+				}
+				else
 				{
 					Console.WriteLine("ERROR! Board has been corrupted.");
 					keepTrying = false;

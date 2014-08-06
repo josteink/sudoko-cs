@@ -156,6 +156,11 @@ namespace SudokuSolver
 			return buffer.ToString();
 		}
 
+		public bool IsTemplate()
+		{
+			return this.All (i => !i.IsAssigned());
+		}
+
 		public Board Clone ()
 		{
 			Board clone = new Board (this);
