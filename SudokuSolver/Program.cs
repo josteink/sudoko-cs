@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SudokuSolver
@@ -12,80 +12,106 @@ namespace SudokuSolver
         static void Main(string[] args)
         {
             string fileName = args.FirstOrDefault();
-            fileName = fileName ?? "Board.txt";
+            fileName = fileName ?? "Boards.txt";
 
             string boardContents = File.ReadAllText(fileName);
-            int[] board = ParseBoard(boardContents);
+            List<int[]> boards = ParseBoards(boardContents);
 
-            bool keepTrying = true;
-            int moves = 0;
-            int moveIndex = 0;
-
-            while (keepTrying)
+            foreach (var currentBoard in boards)
             {
-                if (moves == 0)
+                bool keepTrying = true;
+                int moves = 0;
+                int moveIndex = 0;
+                int[] board = currentBoard;
+
+                while (keepTrying)
                 {
-                    DumpBoard(board, "Intial board:");
+                    if (moves == 0)
+                    {
+                        DumpBoard(board, "Intial board:");
+                    }
+                    else
+                    {
+                        DumpBoard(board, "Current board (" + moves + " moves):", moveIndex);
+                    }
+
+                    board = Iterate(board, out moveIndex);
+
+                    keepTrying = moveIndex.IsSolved();
+
+                    moves++;
+
+                    var success = board.Validate();
+                    if (!success)
+                    {
+                        Console.WriteLine("ERROR! Board has been corrupted.");
+                        keepTrying = false;
+                    }
+                }
+
+                bool unsolved = board.Any(i => !i.IsAssigned());
+                if (unsolved)
+                {
+                    Console.WriteLine("UNSOLVED. Gave up after {0} moves.", moves);
                 }
                 else
                 {
-                    DumpBoard(board, "Current board (" + moves + " moves):", moveIndex);
+                    Console.WriteLine("SOLVED! Finished after {0} moves.", moves);
                 }
 
-                board = Iterate(board, out moveIndex);
-
-                keepTrying = moveIndex.IsSolved();
-
-                moves++;
-
-                var success = board.Validate();
-                if (!success)
-                {
-                    Console.WriteLine("ERROR! Board has been corrupted.");
-                    keepTrying = false;
-                }
+                Console.ReadLine();
             }
-
-            bool unsolved = board.Any(i => !i.IsAssigned());
-            if (unsolved)
-            {
-                Console.WriteLine("UNSOLVED. Gave up after {0} moves.", moves);
-            }
-            else
-            {
-                Console.WriteLine("SOLVED! Finished after {0} moves.", moves);
-            }
-
-            Console.ReadLine();
         }
 
-        private static int[] ParseBoard(string contents)
+        private static List<int[]> ParseBoards(string contents)
         {
-            var buffer = new List<int>();
+            contents = FilterComments(contents);
+
+            var allBoards = new List<int[]>();
+            var boardBuffer = new List<int>();
 
             int _ = ValueUtils.Unassigned;
-
-            var items = contents.Split(new char[] {'\n', ' ', '\t', '\r'}, StringSplitOptions.RemoveEmptyEntries);
-            if (items.Length != 9*9)
-            {
-                throw new Exception("Provided board does not contain a 9*9 grid.");
-            }
-
-            foreach (var item in items)
+            var tokens = contents.Split(new char[] {'\n', ' ', '\t', '\r'}, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var token in tokens)
             {
                 int value;
-                bool isInt = int.TryParse(item, out value);
+                bool isInt = int.TryParse(token, out value);
                 if (isInt)
                 {
-                    buffer.Add(value);
+                    boardBuffer.Add(value);
                 }
                 else
                 {
-                    buffer.Add(ValueUtils.Unassigned);
+                    boardBuffer.Add(ValueUtils.Unassigned);
+                }
+
+                if (boardBuffer.Count == 9*9)
+                {
+                    allBoards.Add(boardBuffer.ToArray());
+                    boardBuffer.Clear();
                 }
             }
 
-            return buffer.ToArray();
+            if (boardBuffer.Count != 0)
+            {
+                Console.WriteLine("{0} tokens ignored in input-data. Not enough to make a dull board.",
+                    boardBuffer.Count);
+            }
+
+            return allBoards;
+        }
+
+        private static string FilterComments(string contents)
+        {
+            string[] lines = contents.Split('\n');
+
+            var remaining = from l in lines
+                let cleaned = l.Trim()
+                where !cleaned.StartsWith("#")
+                select cleaned;
+
+            var newContent = string.Join("\n", remaining.ToArray());
+            return newContent;
         }
 
         private static void DumpBoard(int[] board, string header, int highlightIndex = -1)
