@@ -121,16 +121,11 @@ namespace SudokuSolver
                 {
                     buffer.AppendLine();
                 }
-                // NOT else if. we want double-spacing for new grid rows.
+                // NOT else if and not AND. we want double-spacing for new grid rows.
                 if (index.IsNewRow())
                 {
                     buffer.AppendLine();
                 }
-
-                //if (index.IsNewColumn())
-                //{
-                //    buffer.Append(" ");
-                //}
 
                 bool isHighlightIndex = (index == highlightIndex);
                 bool previousWasHighlight = (index - 1) == highlightIndex && !index.IsNewRow();
@@ -167,13 +162,5 @@ namespace SudokuSolver
 
             return buffer.ToString();
         }
-
-        /*
-         * index 
-         * highlightindex
-         * 
-         * 
-         * hvis index 
-         */
     }
 }
