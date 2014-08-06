@@ -59,6 +59,8 @@ namespace SudokuSolver
                     Console.WriteLine("SOLVED! Finished after {0} moves.", moves);
                 }
 
+                Statistics.DumpStats();
+                Statistics.Reset();
                 Console.ReadLine();
             }
         }
