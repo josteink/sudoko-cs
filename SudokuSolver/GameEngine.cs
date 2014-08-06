@@ -69,20 +69,15 @@ namespace SudokuSolver
 				return result;
 			}
 
-			//// TODO
-			//result = NeighbouringNumbersStrategy.Iterate(board, out keepTrying);
-			//if (!keepTrying)
-			//{
-			//    return result;
-			//}
+			result = NeighbouringNumbersStrategy.Iterate(board, out moveIndex);
+			if (moveIndex.IsSolved())
+			{
+			    return result;
+			}
 
 			// give up
 			moveIndex = IndexUtils.Unsolved;
 			return board;
-
-
 		}
-
 	}
 }
-

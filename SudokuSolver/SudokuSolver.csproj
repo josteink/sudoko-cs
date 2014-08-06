@@ -52,6 +52,8 @@
     <Compile Include="GameEngine.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Board.cs" />
+    <Compile Include="NeighbouringNumbersStrategy.cs" />
+    <Compile Include="Cord.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Boards.txt">

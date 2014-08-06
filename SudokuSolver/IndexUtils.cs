@@ -28,5 +28,21 @@ namespace SudokuSolver
 		{
 			return index != Unsolved;
 		}
-    }
+
+		public static bool IsInSubCellColumn(this int index, int columnIndex)
+		{
+			var numberColumn = index % 9;
+
+			return (numberColumn >= (columnIndex * 3)
+				&& numberColumn < ((columnIndex + 1) * 3));
+		}
+
+		public static bool IsInSubCellRow(this int index, int rowIndex)
+		{
+			var numberRow = (index - (index % 9)) / 9;
+
+			return (numberRow >= (rowIndex*3))
+			        && numberRow < ((rowIndex+1) * 3);
+		}
+	}
 }
