@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -9,22 +11,11 @@ namespace SudokuSolver
     {
         static void Main(string[] args)
         {
-            int _ = ValueUtils.Unassigned;
-            int[] board =
-            {
-                _, 8, _,   4, _, 9,   6, 5, 3,
-                6, 4, 2,   8, _, _,   _, 7, _,
-                _, _, _,   _, _, _,   8, _, _,
+            string fileName = args.FirstOrDefault();
+            fileName = fileName ?? "Board.txt";
 
-                _, _, 7,   _, _, 5,   _, 4, 2,
-                _, _, _,   7, _, 1,   _, _, _,
-                8, 5, _,   6, _, _,   1, _, _,
-
-                _, _, 6,   _, _, _,   _, _, _,
-                _, 1, _,   _, _, 4,   7, 3, 6,
-                2, 7, 3,   5, _, 8,   _, 1, _,
-            };
-
+            string boardContents = File.ReadAllText(fileName);
+            int[] board = ParseBoard(boardContents);
 
             bool keepTrying = true;
             int moves = 0;
@@ -66,6 +57,35 @@ namespace SudokuSolver
             }
 
             Console.ReadLine();
+        }
+
+        private static int[] ParseBoard(string contents)
+        {
+            var buffer = new List<int>();
+
+            int _ = ValueUtils.Unassigned;
+
+            var items = contents.Split(new char[] {'\n', ' ', '\t', '\r'}, StringSplitOptions.RemoveEmptyEntries);
+            if (items.Length != 9*9)
+            {
+                throw new Exception("Provided board does not contain a 9*9 grid.");
+            }
+
+            foreach (var item in items)
+            {
+                int value;
+                bool isInt = int.TryParse(item, out value);
+                if (isInt)
+                {
+                    buffer.Add(value);
+                }
+                else
+                {
+                    buffer.Add(ValueUtils.Unassigned);
+                }
+            }
+
+            return buffer.ToArray();
         }
 
         private static void DumpBoard(int[] board, string header, int highlightIndex = -1)
