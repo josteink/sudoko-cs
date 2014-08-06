@@ -28,6 +28,8 @@ namespace SudokuSolver
 
             bool keepTrying = true;
             int moves = 0;
+            int moveIndex = 0;
+
             while (keepTrying)
             {
                 if (moves == 0)
@@ -36,9 +38,13 @@ namespace SudokuSolver
                 }
                 else
                 {
-                    DumpBoard(board, "Current board (" + moves + " moves):");
+                    DumpBoard(board, "Current board (" + moves + " moves):", moveIndex);
                 }
-                board = Iterate(board, out keepTrying);
+
+                board = Iterate(board, out moveIndex);
+
+                keepTrying = moveIndex.IsSolved();
+
                 moves++;
 
                 var success = board.Validate();
@@ -62,21 +68,21 @@ namespace SudokuSolver
             Console.ReadLine();
         }
 
-        private static void DumpBoard(int[] board, string header)
+        private static void DumpBoard(int[] board, string header, int highlightIndex = -1)
         {
             Console.WriteLine(header);
 
-            var dump = board.GetDump();
+            var dump = board.GetDump(highlightIndex);
             Console.WriteLine(dump);
         }
 
-        private static int[] Iterate(int[] board, out bool keepTrying)
+        private static int[] Iterate(int[] board, out int moveIndex)
         {
             // apply defaults
             int[] result;
 
-            result = IntersectionStrategy.Iterate(board, out keepTrying);
-            if (keepTrying)
+            result = IntersectionStrategy.Iterate(board, out moveIndex);
+            if (moveIndex.IsSolved())
             {
                 return result;
             }
@@ -89,7 +95,7 @@ namespace SudokuSolver
             //}
 
             // give up
-            keepTrying = false;
+            moveIndex = ValueUtils.Unsolved;
             return board;
 
 

@@ -108,33 +108,58 @@ namespace SudokuSolver
             return numItems == numUniqueItems;
         }
 
-        public static string GetDump(this int[] board)
+        private const string Highlighter = "=";
+
+        public static string GetDump(this int[] board, int highlightIndex)
         {
             var buffer = new StringBuilder();
 
-            for (int i = 0; i < board.Length; i++)
+            for (int index = 0; index < board.Length; index++)
             {
-                if (i % 27 == 0)
+
+                if (index.IsNewGridRow())
                 {
-                    //new grid row
-                    buffer.AppendLine();
-                    buffer.AppendLine();
-                }
-                else if (i % 9 == 0)
-                {
-                    // new row
                     buffer.AppendLine();
                 }
-                else if (i % 3 == 0)
+                // NOT else if. we want double-spacing for new grid rows.
+                if (index.IsNewRow())
                 {
-                    // new grid column
-                    buffer.Append("  ");
+                    buffer.AppendLine();
                 }
 
-                var value = board[i];
+                //if (index.IsNewColumn())
+                //{
+                //    buffer.Append(" ");
+                //}
+
+                bool isHighlightIndex = (index == highlightIndex);
+                bool previousWasHighlight = (index - 1) == highlightIndex && !index.IsNewRow();
+                var interSpacer = isHighlightIndex || previousWasHighlight ? Highlighter : " ";
+
+                // normal new column
+                if (index.IsNewColumn() && !previousWasHighlight)
+                {
+                    buffer.Append(" ");
+                    buffer.Append(interSpacer);
+                }
+                else if (index.IsNewColumn() && previousWasHighlight)
+                {
+                    buffer.Append(interSpacer);
+                    buffer.Append(" ");
+                }
+                else
+                {
+                    buffer.Append(interSpacer);
+                }
+
+                var value = board[index];
                 var textValue = value.GetText();
+                buffer.Append(textValue);
 
-                buffer.Append(textValue + " ");
+                if ((index == highlightIndex) && (index + 1).IsNewRow())
+                {
+                    buffer.Append(Highlighter);
+                }
             }
 
             buffer.AppendLine();
@@ -142,5 +167,13 @@ namespace SudokuSolver
 
             return buffer.ToString();
         }
+
+        /*
+         * index 
+         * highlightindex
+         * 
+         * 
+         * hvis index 
+         */
     }
 }

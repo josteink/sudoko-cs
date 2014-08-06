@@ -12,7 +12,7 @@ namespace SudokuSolver
 
         public static string GetStats()
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

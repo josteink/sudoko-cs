@@ -7,7 +7,7 @@ namespace SudokuSolver
 {
     public static class IntersectionStrategy
     {
-        public static int[] Iterate(int[] board, out bool keepTrying)
+        public static int[] Iterate(int[] board, out int moveIndex)
         {
             for (int index = 0; index < board.Length; index++)
             {
@@ -26,12 +26,12 @@ namespace SudokuSolver
                     newBoard[index] = candidates[0];
 
                     Statistics.IntersectonStrategyMoves++;
-                    keepTrying = true;
+                    moveIndex = index;
                     return newBoard;
                 }
             }
 
-            keepTrying = false;
+            moveIndex = ValueUtils.Unsolved;
             return board;
         }
     }

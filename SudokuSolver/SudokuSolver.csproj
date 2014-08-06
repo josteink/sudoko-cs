@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoardUtils.cs" />
+    <Compile Include="IndexUtils.cs" />
     <Compile Include="IntersectionStrategy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
