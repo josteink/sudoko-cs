@@ -37,13 +37,11 @@ namespace SudokuSolver
 
 		public static Cell[] GetValueCandidates(Board board, int index)
 		{
-			var allValues = new[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
-			var all = allValues.Select(i => new Cell(i));
-
 			var columnValues = board.GetColumnValues(index).Where(i => i.IsAssigned()).ToArray();
 			var rowValues = board.GetRowValues(index).Where(i => i.IsAssigned()).ToArray();
 			var gridValues = board.GetGridValues(index).Where(i => i.IsAssigned()).ToArray();
 
+			var all = Cell.All;
 			var missingColumnValues = all.Except(columnValues).ToArray();
 			var missingRowValues = all.Except(rowValues).ToArray();
 			var missingGridValues = all.Except(gridValues).ToArray();

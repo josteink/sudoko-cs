@@ -58,5 +58,15 @@ namespace SudokuSolver
 		{
 			return Value.GetHashCode ();
 		}
+
+		public static Cell[] All
+		{
+			get
+			{
+				var allValues = new[] {1, 2, 3, 4, 5, 6, 7, 8, 9};
+				var all = allValues.Select(i => new Cell(i));
+				return all.ToArray ();
+			}
+		}
 	}
 }
