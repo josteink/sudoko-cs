@@ -87,7 +87,7 @@ To
 			var whatIfValues = firstLow.Value;
 
 			// verify with recursion.
-			foreach (var whatIfValue in whatIfValues.Reverse())
+			foreach (var whatIfValue in whatIfValues)
 			{
 				Statistics.TentativeStrategyMoves++;
 
@@ -98,7 +98,7 @@ To
 				if (GameEngine.IsSolved(result))
 				{
 					moveIndex = whatIfIndex;
-					return newBoard;
+					return result;
 				}
 
 				Statistics.TentativeStrategyUndos++;
