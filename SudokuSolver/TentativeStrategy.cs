@@ -86,7 +86,7 @@ To
 			var whatIfIndex = firstLow.Key;
 			var whatIfValues = firstLow.Value;
 
-			// verify with recursion to OverallStrategy.
+			// verify with recursion.
 			foreach (var whatIfValue in whatIfValues.Reverse())
 			{
 				Statistics.TentativeStrategyMoves++;
@@ -94,16 +94,11 @@ To
 				var newBoard = board.Clone ();
 				newBoard [whatIfIndex] = whatIfValue;
 
-				// TODO: fix. we should recurse all the way up to the game-engine.
-				// otherwise we will only see that next move is OK (because another tentative move will
-				// be applied) and then we have no means to fall back to a known good
-				// state.
-				int whatIfMoveNext;
-				var result = OverallStrategy.Iterate (newBoard, out whatIfMoveNext);
-				if (whatIfMoveNext.IsSolved ())
+				var result = GameEngine.AttemptSolve (newBoard);
+				if (GameEngine.IsSolved(result))
 				{
-					moveIndex = whatIfMoveNext;
-					return result;
+					moveIndex = whatIfIndex;
+					return newBoard;
 				}
 
 				Statistics.TentativeStrategyUndos++;

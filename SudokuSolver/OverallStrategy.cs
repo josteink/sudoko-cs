@@ -21,6 +21,8 @@ namespace SudokuSolver
 				return result;
 			}
 
+			// TODO: implement better strategy which understands the board better?
+
 			result = TentativeStrategy.Iterate(board, out moveIndex);
 			if (moveIndex.IsSolved())
 			{
