@@ -54,6 +54,8 @@
     <Compile Include="Board.cs" />
     <Compile Include="NeighbouringNumbersStrategy.cs" />
     <Compile Include="Cord.cs" />
+    <Compile Include="TentativeStrategy.cs" />
+    <Compile Include="OverallStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Boards.txt">

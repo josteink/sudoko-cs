@@ -23,7 +23,7 @@ namespace SudokuSolver
 					DumpBoard(currentBoard, "Current board (" + moves + " moves):", moveIndex);
 				}
 
-				currentBoard = Iterate(currentBoard, out moveIndex);
+				currentBoard = OverallStrategy.Iterate(currentBoard, out moveIndex);
 
 				// sanity-check
 				var valid = currentBoard.Validate();
@@ -58,26 +58,5 @@ namespace SudokuSolver
 			Console.WriteLine(dump);
 		}
 
-		private static Board Iterate(Board board, out int moveIndex)
-		{
-			// apply defaults
-			Board result;
-
-			result = IntersectionStrategy.Iterate(board, out moveIndex);
-			if (moveIndex.IsSolved())
-			{
-				return result;
-			}
-
-			result = NeighbouringNumbersStrategy.Iterate(board, out moveIndex);
-			if (moveIndex.IsSolved())
-			{
-			    return result;
-			}
-
-			// give up
-			moveIndex = IndexUtils.Unsolved;
-			return board;
-		}
 	}
 }
