@@ -7,6 +7,8 @@ namespace SudokuSolver
 {
     public static class IndexUtils
     {
+		public const int Unsolved = -2;
+
         public static bool IsNewGridRow(this int index)
         {
             return index % 27 == 0;
@@ -21,5 +23,10 @@ namespace SudokuSolver
         {
             return index % 3 == 0;
         }
+
+		public static bool IsSolved(this int index)
+		{
+			return index != Unsolved;
+		}
     }
 }
