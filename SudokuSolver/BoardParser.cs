@@ -21,21 +21,18 @@ namespace SudokuSolver
 			var allBoards = new List<Board>();
 			var boardBuffer = new List<Cell>();
 
+		    int index = 0;
 			var tokens = contents.Split(new char[] {'\n', ' ', '\t', '\r'}, StringSplitOptions.RemoveEmptyEntries);
 			foreach (var token in tokens)
 			{
 				int value;
 				bool isInt = int.TryParse(token, out value);
-				if (isInt)
-				{
-					boardBuffer.Add(new Cell(value));
-				}
-				else
-				{
-					boardBuffer.Add(new Cell(Cell.Unassigned));
-				}
+			    var cellValue = isInt ? value : Cell.Unassigned;
 
-				if (boardBuffer.Count == 9*9)
+                boardBuffer.Add(new Cell(cellValue, index));
+
+
+                if (boardBuffer.Count == Board.BoardSize)
 				{
 					var newBoard = new Board (boardBuffer);
 					if (! newBoard.IsTemplate())
@@ -43,7 +40,10 @@ namespace SudokuSolver
 						allBoards.Add(newBoard);
 					}
 					boardBuffer.Clear();
+				    index = 0;
 				}
+
+			    index++;
 			}
 
 			if (boardBuffer.Count != 0)

@@ -16,6 +16,8 @@ namespace SudokuSolver
         {
             IntersectonStrategyMoves = 0;
             NeighbouringNumbersStrategyMoves = 0;
+			TentativeStrategyMoves = 0;
+			TentativeStrategyUndos = 0;
         }
 
         public static void DumpStats()

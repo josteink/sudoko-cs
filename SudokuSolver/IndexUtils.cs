@@ -9,19 +9,37 @@ namespace SudokuSolver
     {
 		public const int Unsolved = -2;
 
+        public static int GetX(this int index)
+        {
+            if (index == Unsolved)
+            {
+                return Unsolved;
+            }
+            return index % Board.RowSize;
+        }
+
+        public static int GetY(this int index)
+        {
+            if (index == Unsolved)
+            {
+                return Unsolved;
+            }
+            return (index - GetX(index)) / Board.RowSize;
+        }
+
         public static bool IsNewGridRow(this int index)
         {
-            return index % 27 == 0;
+            return index % Board.CellSize == 0;
         }
 
         public static bool IsNewRow(this int index)
         {
-            return index % 9 == 0;
+            return index % Board.RowSize == 0;
         }
 
         public static bool IsNewColumn(this int index)
         {
-            return index % 3 == 0;
+            return index % Board.GridSize == 0;
         }
 
 		public static bool IsSolved(this int index)

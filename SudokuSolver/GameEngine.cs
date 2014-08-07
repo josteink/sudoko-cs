@@ -1,16 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SudokuSolver
 {
-	public static class GameEngine
+	public class GameEngine
 	{
 		public static int TotalMoves { get; set; }
 
 		public static void Play(Board board)
 		{
-			var bestEffort = AttemptSolve (board);
-			if (IsSolved (bestEffort))
+		    var strategy = new GameEngine();
+
+            var bestEffort = strategy.Solve(board);
+			if (bestEffort.IsSolved())
 			{
 				Console.WriteLine("SOLVED!");
 			}
@@ -20,53 +23,50 @@ namespace SudokuSolver
 			}
 		}
 
-		public static Board AttemptSolve(Board board)
+		public Board Solve(Board board)
 		{
-			bool keepTrying = true;
-			int moveIndex = 0;
+		    IStrategy strategy = new OverallStrategy();
+			bool success = true;
 			Board currentBoard = board;
 
-			while (keepTrying)
-			{
-				if (TotalMoves == 0)
-				{
-					DumpBoard(currentBoard, "Intial board:");
-				}
-				else
-				{
-					DumpBoard(currentBoard, "Current board (" + TotalMoves + " moves):", moveIndex);
-				}
+            DumpBoard(currentBoard, "Intial board:");
 
-				currentBoard = OverallStrategy.Iterate(currentBoard, out moveIndex);
+		    do
+		    {
+		        var move = strategy.Solve(currentBoard);
 
-				// sanity-check
-				var valid = currentBoard.Validate();
-				if (valid)
-				{
-					keepTrying = moveIndex.IsSolved();
-					TotalMoves++;
-				}
-				else
-				{
-					Console.WriteLine("ERROR! Board has been corrupted.");
-					keepTrying = false;
-				}
-			}
+		        success = (move != null);
+		        if (success)
+		        {
+		            var newBoard = currentBoard.Apply(move);
+
+
+                    // sanity-check
+                    var valid = newBoard.Validate();
+                    if (!valid)
+                    {
+                        Console.WriteLine("ERROR! Board has been corrupted.");
+                        success = false;
+                    }
+                    else
+                    {
+                        currentBoard = newBoard;
+                        TotalMoves++;
+                        string msg = string.Format("Current board (Total {0} moves):", TotalMoves);
+                        DumpBoard(currentBoard, msg, move);
+                    }
+                }
+
+		    } while (success);
 
 			return currentBoard;
 		}
 
-		public static bool IsSolved(Board board)
-		{
-			bool solved = board.All(i => i.IsAssigned());
-			return solved;
-		}
-
-		private static void DumpBoard(Board board, string header, int highlightIndex = -1)
+		private static void DumpBoard(Board board, string header, Cell highlightCell = null)
 		{
 			Console.WriteLine(header);
 
-			var dump = board.GetDump(highlightIndex);
+            var dump = board.GetDump(highlightCell);
 			Console.WriteLine(dump);
 		}
 

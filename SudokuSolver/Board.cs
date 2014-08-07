@@ -11,6 +11,11 @@ namespace SudokuSolver
 	/// </summary>
 	public class Board : List<Cell>
 	{
+        public const int GridSize = 3;
+        public const int RowSize = GridSize * GridSize;
+        public const int CellSize = GridSize * RowSize;
+        public const int BoardSize = GridSize * CellSize;
+
 		public Board()
 		{
 		}
@@ -20,75 +25,114 @@ namespace SudokuSolver
 		{
 		}
 
-		public Cell[] GetColumnValues(int index)
+		private Cell[] GetColumn(Cell cell)
 		{
-			var columnNumber = index % 9;
-			var buffer = new List<Cell>();
+            var columnValues =
+                from c in this
+                where c.X == cell.X
+                select c;
 
-			for (int i=0; i < 9; i++)
-			{
-				var value = this[columnNumber + (i*9)];
-				buffer.Add(value);
-			}
-
-			return buffer.ToArray();
+		    return columnValues.ToArray();
 		}
 
-		public Cell[] GetRowValues(int index)
+        public Cell[] GetAssignedColumnCells(Cell cell)
+        {
+            return GetColumn(cell)
+                .Where(i => i.IsAssigned())
+                .ToArray();
+        }
+
+        public Cell[] GetUnassignedColumnCells(Cell cell)
+	    {
+            return GetColumn(cell)
+                .Where(i => !i.IsAssigned())
+                .ToArray();
+        }
+
+		private Cell[] GetRow(Cell cell)
 		{
-			var rowNumber = (index - (index%9))/9;
+            var rowValues =
+                from c in this
+                where c.IsAssigned() && c.Y == cell.Y
+                select c;
 
-			var buffer = new List<Cell>();
-
-			for (int i=0; i < 9; i++)
-			{
-				var value = this[(rowNumber*9) + i];
-				buffer.Add(value);
-			}
-
-			return buffer.ToArray();
+		    return rowValues.ToArray();
 		}
 
-		public Cell[] GetGridValues(int index)
+        public Cell[] GetAssignedRowCells(Cell cell)
+        {
+            return GetRow(cell)
+                .Where(i => i.IsAssigned())
+                .ToArray();
+        }
+
+        public Cell[] GetUnassignedRowCells(Cell cell)
+        {
+            return GetRow(cell)
+                .Where(i => !i.IsAssigned())
+                .ToArray();
+        }
+
+	    public Cell[] GetGridCells(int gx, int gy)
+	    {
+	        var xStart = gx*Board.GridSize;
+	        var yStart = gy*Board.CellSize;
+
+	        var targetIndex = xStart + yStart;
+	        var targetCell = new Cell(Cell.Unassigned, targetIndex);
+
+            return GetGridCells(targetCell);
+	    }
+
+        public Cell[] GetGridCells(Cell cell)
 		{
-			int horiz = index%9;           // 16 -> 7
-			int vert = (index - horiz)/9;  // 16 -> (16-7)/9 -> 1
+            var gridValues =
+                from c in this
+                where c.XSection == cell.XSection
+                      && c.YSection == cell.YSection
+                select c;
 
-			int gridStartH = horiz - (horiz%3); // 7 - 1 -> 6
-			int gridStartV = vert - (vert%3);   // 1 - 1 -> 0
-
-			var buffer = new List<Cell>();
-
-			for (var x = 0; x < 3; x++)
-			{
-				for (var y = 0; y < 3; y++)
-				{
-					var value = this[9*(y + gridStartV) + x + gridStartH];
-					buffer.Add(value);
-				}
-			}
-
-			return buffer.ToArray();
+		    return gridValues.ToArray();
 		}
+
+	    public Board Apply(Cell move)
+	    {
+	        if (move.Index < 0)
+	        {
+	            throw new InvalidOperationException();
+	        }
+
+	        var result = Clone();
+	        result[move.Index] = move;
+
+            // TODO: post-validate board-state
+            // (avoid incompatible intersections like
+            // 12345678_ and (missing 9)
+            // 23456789_     (missing 1)
+
+	        return result;
+	    }
 
 		public bool Validate()
 		{
-			for (int index = 0; index < this.Count; index++)
-			{
-				var columnValues = GetColumnValues(index).Where(i => i.IsAssigned()).ToArray();
-				var rowValues = GetRowValues(index).Where(i => i.IsAssigned()).ToArray();
-				var gridValues = GetGridValues(index).Where(i => i.IsAssigned()).ToArray();
+		    foreach (var cell in this)
+		    {
+		        var columnValues = GetAssignedColumnCells(cell);
+		        var rowValues = GetAssignedRowCells(cell);
+		        var gridValues = GetGridCells(cell)
+                    .Where(i => i.IsAssigned())
+                    .ToArray();
 
-				bool valid = true;
-				valid &= ValidateAllAsignedUnique(columnValues);
-				valid &= ValidateAllAsignedUnique(rowValues);
-				valid &= ValidateAllAsignedUnique(gridValues);
+                bool valid = true;
+                valid &= ValidateAllAsignedUnique(columnValues);
+                valid &= ValidateAllAsignedUnique(rowValues);
+                valid &= ValidateAllAsignedUnique(gridValues);
 
-				if (!valid)
-				{
-					return false;
-				}
-			}
+                if (!valid)
+                {
+                    return false;
+                }
+            }
 
 			return true;
 		}
@@ -103,8 +147,10 @@ namespace SudokuSolver
 
 		private const string Highlighter = "=";
 
-		public string GetDump(int highlightIndex)
+		public string GetDump(Cell highlightCell)
 		{
+		    var highlightIndex = highlightCell == null ? -1 : highlightCell.Index;
+
 			var buffer = new StringBuilder();
 
 			for (int index = 0; index < this.Count; index++)
@@ -160,6 +206,12 @@ namespace SudokuSolver
 		{
 			return this.All (i => !i.IsAssigned());
 		}
+
+        public bool IsSolved()
+        {
+            bool solved = this.All(i => i.IsAssigned());
+            return solved;
+        }
 
 		public Board Clone ()
 		{

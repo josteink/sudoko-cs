@@ -44,7 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IndexUtils.cs" />
-    <Compile Include="IntersectionStrategy.cs" />
+    <Compile Include="Strategies\IntersectionStrategy.cs" />
+    <Compile Include="IStrategy.cs" />
+    <Compile Include="LinqUtils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statistics.cs" />
@@ -52,10 +54,9 @@
     <Compile Include="GameEngine.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Board.cs" />
-    <Compile Include="NeighbouringNumbersStrategy.cs" />
-    <Compile Include="Cord.cs" />
-    <Compile Include="TentativeStrategy.cs" />
-    <Compile Include="OverallStrategy.cs" />
+    <Compile Include="Strategies\NeighbouringNumbersStrategy.cs" />
+    <Compile Include="Strategies\TentativeStrategy.cs" />
+    <Compile Include="Strategies\OverallStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Boards.txt">
