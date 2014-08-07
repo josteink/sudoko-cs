@@ -29,10 +29,10 @@ namespace SudokuSolver
 			bool success = true;
 			Board currentBoard = board;
 
-            DumpBoard(currentBoard, "Intial board:");
+					DumpBoard(currentBoard, "Intial board:");
 
 		    do
-		    {
+				{
 		        var move = strategy.Solve(currentBoard);
 
 		        success = (move != null);
@@ -41,21 +41,30 @@ namespace SudokuSolver
 		            var newBoard = currentBoard.Apply(move);
 
 
-                    // sanity-check
+				// TODO:
+				/*
+				 * var moves = strategy.GetSolutionSpace(board);
+				 * if (moves != null)
+				 * {
+				 *     newBoard = moves.Aggregate(board, i => i == null : null ? i.Apply);
+				 * }
+				 */
+
+				// sanity-check
                     var valid = newBoard.Validate();
                     if (!valid)
-                    {
+				{
                         Console.WriteLine("ERROR! Board has been corrupted.");
                         success = false;
-                    }
-                    else
-                    {
+				}
+				else
+				{
                         currentBoard = newBoard;
                         TotalMoves++;
                         string msg = string.Format("Current board (Total {0} moves):", TotalMoves);
                         DumpBoard(currentBoard, msg, move);
-                    }
-                }
+				}
+			}
 
 		    } while (success);
 

@@ -9,7 +9,7 @@ using System.Text;
 namespace SudokuSolver
 {
     [System.Diagnostics.DebuggerDisplay("{Value} ({X},{Y})")]
-    public class Cell : IEquatable<Cell>
+	public class Cell : IEquatable<Cell>
 	{
         public const int Unassigned = -1;
 
@@ -27,7 +27,7 @@ namespace SudokuSolver
             get { return (Y - (Y % Board.GridSize)) / Board.GridSize; }
         }
 
-	    public Cell(int value)
+		public Cell(int value)
             : this(value, IndexUtils.Unsolved)
 	    {
 	    }
@@ -57,23 +57,23 @@ namespace SudokuSolver
 	        return result;
 	    }
 
-        public override string ToString()
-        {
-            if (!IsAssigned())
-            {
-                return " ";
-            }
-            else
-            {
-                return Value.ToString();
-            }
-        }
+		public override string ToString()
+		{
+			if (!IsAssigned())
+			{
+				return " ";
+			}
+			else
+			{
+				return Value.ToString();
+			}
+		}
 
         #region Equality
 
         // TODO: override == operator.
 
-        public override bool Equals(object other)
+		public override bool Equals(object other)
 		{
 			if (other == null)
 			{
@@ -100,7 +100,7 @@ namespace SudokuSolver
 
         #endregion Equality
 
-        public static Cell[] All
+		public static Cell[] All
 		{
 			get
 			{

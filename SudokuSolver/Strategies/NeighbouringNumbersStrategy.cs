@@ -52,22 +52,15 @@ namespace SudokuSolver
 						var adjacentColumnPositions = GetColumnPositions (board, cellValue, x);
 						var adjacentRowPositions =    GetRowPositions (board, cellValue, y);
 
-					    var cand1 = availablePositions
-					        .ExcludeOn(adjacentColumnPositions, i => i.X)
-					        .ToArray();
-					    var cand2 = cand1
-                            .ExcludeOn(adjacentRowPositions, i => i.Y)
-					        .ToArray();
+                        var candidates =
+                            availablePositions
+                                .ExcludeOn(adjacentColumnPositions, i => i.X)
+                                .ExcludeOn(adjacentRowPositions, i => i.Y)
+                                .ToArray();
 
-                        //var candidates = 
-                        //    availablePositions
-                        //        .ExcludeOn(adjacentColumnPositions, i => i.X)
-                        //        .ExcludeOn(adjacentRowPositions,    i => i.Y)
-                        //        .ToArray();
-
-                        if (cand2.Length == 1)
+                        if (candidates.Length == 1)
 						{
-                            var target = cand2[0];
+                            var target = candidates[0];
 						    var move = target.Apply(cellValue);
 							Statistics.NeighbouringNumbersStrategyMoves++;
 							return move;

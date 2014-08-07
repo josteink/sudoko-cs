@@ -6,56 +6,56 @@ namespace SudokuSolver
 {
 	public class TentativeStrategy : IStrategy
 	{
-        /*
-    Current board (14 moves):
+	/*
+Current board (14 moves):
 
 
-      9 8                
-      3 2 7  1 9      8  
-        5 4    8 2  9    
+  9 8                
+  3 2 7  1 9      8  
+    5 4    8 2  9    
 
-      7 4    6        9  
-      2 9                
-        1 3  9   7       
+  7 4    6        9  
+  2 9                
+    1 3  9   7       
 
-      4        5    2   9
-      5 6 9  2 1 4  8 7 3
-          2      9  5   4
+  4        5    2   9
+  5 6 9  2 1 4  8 7 3
+      2      9  5   4
 
-    NeighbouringNumbersStrategy fails here.
+NeighbouringNumbersStrategy fails here.
 
-    We have several places where we can attempt one of "few" options, and see if that works out.
+We have several places where we can attempt one of "few" options, and see if that works out.
 
-    Like from
+Like from
 
-      9 8                
-      3 2 7 
-        5 4 
+  9 8                
+  3 2 7 
+    5 4 
 
-    To
+To
 
-      9 8 1              
-      3 2 7 
-        5 4 
+  9 8 1              
+  3 2 7 
+    5 4 
 
 
 
-             */
-        public static int NestingLevel = 0;
+	 	 */
+		public static int NestingLevel = 0;
 		public const int MaxNesting = 5;
 
         public Cell Solve(Board board)
-        {
+		{
             if (NestingLevel >= MaxNesting)
             {
                 return null;
-            }
+			}
 
-            using (new NestingContainer())
-            {
+			using (new NestingContainer())
+			{
                 return IterateNested(board);
-            }
-        }
+			}
+		}
 
 		private Cell IterateNested(Board board)
 		{
@@ -66,7 +66,7 @@ namespace SudokuSolver
 		        let cands = IntersectionStrategy.GetValueCandidates(board, c)
                 where cands.Length > 0
 		        select new
-		        {
+			{
 		            Cell = c,
 		            Candidates = cands
 		        };

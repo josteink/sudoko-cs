@@ -36,18 +36,18 @@ namespace SudokuSolver
 		}
 
         public Cell[] GetAssignedColumnCells(Cell cell)
-        {
+			{
             return GetColumn(cell)
                 .Where(i => i.IsAssigned())
                 .ToArray();
-        }
+			}
 
         public Cell[] GetUnassignedColumnCells(Cell cell)
 	    {
             return GetColumn(cell)
                 .Where(i => !i.IsAssigned())
                 .ToArray();
-        }
+		}
 
 		private Cell[] GetRow(Cell cell)
 		{
@@ -60,21 +60,21 @@ namespace SudokuSolver
 		}
 
         public Cell[] GetAssignedRowCells(Cell cell)
-        {
+			{
             return GetRow(cell)
                 .Where(i => i.IsAssigned())
                 .ToArray();
-        }
+			}
 
         public Cell[] GetUnassignedRowCells(Cell cell)
         {
             return GetRow(cell)
                 .Where(i => !i.IsAssigned())
                 .ToArray();
-        }
+		}
 
 	    public Cell[] GetGridCells(int gx, int gy)
-	    {
+		{
 	        var xStart = gx*Board.GridSize;
 	        var yStart = gy*Board.CellSize;
 
@@ -96,11 +96,11 @@ namespace SudokuSolver
 		}
 
 	    public Board Apply(Cell move)
-	    {
+			{
 	        if (move.Index < 0)
-	        {
+				{
 	            throw new InvalidOperationException();
-	        }
+			}
 
 	        var result = Clone();
 	        result[move.Index] = move;
@@ -111,28 +111,28 @@ namespace SudokuSolver
             // 23456789_     (missing 1)
 
 	        return result;
-	    }
+		}
 
 		public bool Validate()
 		{
 		    foreach (var cell in this)
-		    {
+			{
 		        var columnValues = GetAssignedColumnCells(cell);
 		        var rowValues = GetAssignedRowCells(cell);
 		        var gridValues = GetGridCells(cell)
                     .Where(i => i.IsAssigned())
                     .ToArray();
 
-                bool valid = true;
-                valid &= ValidateAllAsignedUnique(columnValues);
-                valid &= ValidateAllAsignedUnique(rowValues);
-                valid &= ValidateAllAsignedUnique(gridValues);
+				bool valid = true;
+				valid &= ValidateAllAsignedUnique(columnValues);
+				valid &= ValidateAllAsignedUnique(rowValues);
+				valid &= ValidateAllAsignedUnique(gridValues);
 
-                if (!valid)
-                {
-                    return false;
-                }
-            }
+				if (!valid)
+				{
+					return false;
+				}
+			}
 
 			return true;
 		}
