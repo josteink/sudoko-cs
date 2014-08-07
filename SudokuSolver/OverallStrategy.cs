@@ -6,6 +6,9 @@ namespace SudokuSolver
 	{
 		public static Board Iterate(Board board, out int moveIndex)
 		{
+			// TODO: Create IStrategy
+			// - GetSolutionSpace List<Cell>(board);
+
 			// apply defaults
 			Board result;
 

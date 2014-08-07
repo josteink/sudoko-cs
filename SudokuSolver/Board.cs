@@ -71,6 +71,10 @@ namespace SudokuSolver
 			return buffer.ToArray();
 		}
 
+		// TODO: Board Apply(IEnumerable<cell> moves)
+		// Validates all moves and board-state. 
+		// return null on invalid board.
+
 		public bool Validate()
 		{
 			for (int index = 0; index < this.Count; index++)

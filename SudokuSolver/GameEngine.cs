@@ -39,6 +39,15 @@ namespace SudokuSolver
 
 				currentBoard = OverallStrategy.Iterate(currentBoard, out moveIndex);
 
+				// TODO:
+				/*
+				 * var moves = strategy.GetSolutionSpace(board);
+				 * if (moves != null)
+				 * {
+				 *     newBoard = moves.Aggregate(board, i => i == null : null ? i.Apply);
+				 * }
+				 */
+
 				// sanity-check
 				var valid = currentBoard.Validate();
 				if (valid)
@@ -56,6 +65,7 @@ namespace SudokuSolver
 			return currentBoard;
 		}
 
+		// TODO: Move to Board.cs
 		public static bool IsSolved(Board board)
 		{
 			bool solved = board.All(i => i.IsAssigned());

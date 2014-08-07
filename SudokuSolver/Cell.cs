@@ -8,14 +8,17 @@ namespace SudokuSolver
 {
 	public class Cell : IEquatable<Cell>
 	{
+		public const int Unassigned = -1;
+
 		public Cell(int value)
 		{
 			Value = value;
 		}
 
-		public const int Unassigned = -1;
-
 		public int Value { get; set; }
+
+		// TODO: Add X,Y, Index.
+		// Use for filtering instead of IndexUtils.
 
 		public bool IsAssigned()
 		{
