@@ -42,7 +42,7 @@ To
 	public static class TentativeStrategy
 	{
 		public static int NestingLevel = 0;
-		public const int MaxNesting = 3;
+		public const int MaxNesting = 5;
 
 		public static Board Iterate(Board board, out int moveIndex)
 		{
